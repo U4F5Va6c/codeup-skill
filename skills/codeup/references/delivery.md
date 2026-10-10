@@ -38,7 +38,7 @@ Codeup UI 通常称合并请求，API 名称为 `ChangeRequest`；可以称 PR/M
 
 - `sourceBranch`、`targetBranch`：真实分支。
 - `sourceProjectId`、`targetProjectId`：数字代码库 ID，**不是 ProjeX projectId**。
-- `title`、`description`；正文使用 [合并请求模板](../assets/merge-request.md)。
+- `title`、`description`：内容与结构遵循当前流程 Skill、用户与项目约定；[合并请求模板](../assets/merge-request.md) 仅供缺少约定时参考，发布格式见 [Markdown 与富文本](text-format.md)。
 - `workItemIds`：关联的工作项 API ID，REST 形状是逗号分隔字符串。
 - `reviewerUserIds`：实际用户 ID 列表（需要指定评审人时）。
 

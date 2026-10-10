@@ -22,9 +22,9 @@
 
 ## 创建与拆分
 
-读取完整工作项内容、评论及验收标准后再拆分。需求写用户问题、预期结果和验收标准；任务采用可独立验收的纵向切片；缺陷写复现步骤、预期/实际行为与影响范围。
+读取完整工作项内容、评论及验收标准后再拆分。内容与结构沿用当前流程 Skill、用户要求及项目约定；发布格式按 [Markdown 与富文本](text-format.md) 适配。
 
-`CreateWorkitem` 的基本必填字段为 `spaceId`、`workitemTypeId`、`subject`、`assignedTo`，项目配置可能要求额外字段。Markdown 描述显式设置 `formatType=MARKDOWN`。先发现类型字段配置和成员 ID；缺少必填负责人时只补问负责人，不猜人选。
+`CreateWorkitem` 的基本必填字段为 `spaceId`、`workitemTypeId`、`subject`、`assignedTo`，项目配置可能要求额外字段。先发现类型字段配置和成员 ID；缺少必填负责人时只补问负责人，不猜人选。
 
 按依赖顺序创建：先创建阻塞项，记录真实 API ID，再创建依赖项。设置 `parentId` 前验证允许的父子类型。使用 `projex-list-workitem-relation-workitem-types --id <类型ID> --relation-type <关系类型>`，分别传入 `SUB` 和 `DEPEND_ON` 检查两类约束：允许子任务不代表允许任务间依赖。原生依赖关系只有确认操作和方向后才写；不可用时用正文 `Blocked by` 和工作项链接明确记录，并说明这是文本依赖。不要把普通关联或外部资源关系冒充阻塞。
 
