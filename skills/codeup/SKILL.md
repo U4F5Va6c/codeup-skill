@@ -23,6 +23,7 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 
 | 本次任务 | 参考 |
 |---|---|
+| 编写或更新工作项正文、MR 描述与评论 | [Markdown 与富文本](references/text-format.md)；内容要求沿用当前流程 Skill、用户与项目约定 |
 | 创建、拆分、查询、标记或推进需求/缺陷/任务 | [ProjeX 工作项](references/projex.md) |
 | 分支、提交、推送、合并请求、评审、合并策略、测试、CI/CD | [代码交付](references/delivery.md)；合并前读取其中的默认策略 |
 | 初始化仓库、接入 setup-matt-pocock-skills / to-spec / to-tickets / triage | [仓库接入](references/repository-setup.md) |
