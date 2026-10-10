@@ -15,7 +15,7 @@ npx -y skills add U4F5Va6c/codeup-skill -g -a claude-code codex -s codeup -y
 需要固定版本时安装已发布标签：
 
 ```sh
-npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.1.0/skills/codeup -g -a claude-code codex -s codeup -y
+npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.1.1/skills/codeup -g -a claude-code codex -s codeup -y
 ```
 
 跟随主分支安装的用户可运行 `npx skills update -g -y`（会检查其他已安装 Skills）。固定版本或通过 Dotfiles 快照安装的用户应显式选择新版本再安装。
@@ -41,7 +41,7 @@ npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.1.0/skills/co
 | [交付](skills/codeup/references/delivery.md) | Git、MR、评审、Flow、Testhub 与验收 |
 | [工具选择](docs/tooling.md) | 与 gh、第三方 codeup-cli、T3 Provider 的边界 |
 
-当前版本经过包结构、相对链接和可移植性检查；尚未在真实云效租户完成端到端验收。API 参数以当前官方文档和已安装工具 schema 为准。
+2026-10-10 已在隔离云效资源验证工作项父子关系、独立工作树实现、CLI 测试、推送、MR 原生关联与 Agent 评审、准确提交的 Flow CI，以及 Testhub 执行记录。原生任务依赖受组织关系类型配置限制，完整流程验收仍未通过；T3 的 Codeup MR 线程关联尚不支持。包结构、相对链接和可移植性检查已通过；API 参数以当前官方文档和已安装工具 schema 为准。
 
 ## 维护
 

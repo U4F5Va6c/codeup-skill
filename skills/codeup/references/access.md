@@ -21,6 +21,8 @@ Region 版使用 PAT 和 `ALIBABA_CLOUD_YUNXIAO_API_BASE_URL`，接入地址取�
 
 API Token 不放进 Skill、仓库、命令参数、URL、报告或聊天。T3 Code 场景下凭据需提供给实际运行 Agent 的 environment/server；手机或交互式终端的变量不会自动出现在服务器进程中。禁止从仓库自动 `source .env` 获取令牌，因为这会执行仓库提供的 Shell 代码。
 
+若项目使用 1Password，先读项目或 Dotfiles 的云效调用指引，复用仅含 `op://` 引用的 env 模板，通过 `op run --env-file=<已核实模板> -- aliyun devops ...` 注入。模板不含明文令牌；跨设备需各自配置可用的凭据通道，不能把本机登录态当作服务器授权。
+
 新版是 `aliyun devops codeup-* / projex-* / flow-* / test-hub-*`，例如：
 
 ```sh
