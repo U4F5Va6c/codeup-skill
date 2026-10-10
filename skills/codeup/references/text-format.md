@@ -16,9 +16,27 @@
 
 普通链接使用真实资源 URL，以标题、工作项编号或短 SHA 为链接文字均可；语法示例为 `[文字](https://example.com)` 或 `<a href="https://example.com">文字</a>`，发布时替换为真实目标。链接不会自动建立父子、阻塞或 MR 关联，也不能据此假定支持 GitHub 的 `#123` 自动引用。
 
-## ProjeX 评论：优先原生 Markdown
+## ProjeX 评论：固定使用 Markdown 脚本
 
-为保留 Markdown 源文和接近 GitHub 的编辑体验，优先使用支持指定格式的入口。中心版已验证：
+默认将已确定的 Markdown 存为 UTF-8 文件，通过本机凭据入口运行随包 [projex_comment.py](../scripts/projex_comment.py)。脚本仅依赖 Python 3 标准库，只支持中心版默认接入点；调用前按项目配置核实部署类型、组织和工作项 API ID。Region 版先核对实例路由，不能直接套用此脚本。
+
+`<skill目录>` 指本次已加载的 `SKILL.md` 所在目录，使用绝对路径，无需切换业务仓库的工作目录。以下二选一，真实入口和模板取自本机指引：
+
+```sh
+# 桌面 1Password：沿用本机账户、模板和持久终端
+op run --env-file=<本机模板> -- \
+  python3 <skill目录>/scripts/projex_comment.py --id <工作项API-ID> --body-file <评论文件.md>
+
+# 已支持 --exec 的服务器入口：使用该机 PAT
+aliyun-devops --exec python3 <skill目录>/scripts/projex_comment.py \
+  --id <工作项API-ID> --body-file <评论文件.md>
+```
+
+CI 已注入 `ALIBABA_CLOUD_YUNXIAO_ACCESS_TOKEN` 与 `ALIBABA_CLOUD_YUNXIAO_ORGANIZATION_ID` 时直接运行同一 Python 命令。脚本不读取 1Password 或机器凭据文件、不打印令牌、不跟随重定向，也不自动重试 POST。
+
+退出码 `0` 输出 `{"id":"<评论ID>"}`，只表示创建返回了 ID。随后通过同一本机入口执行 `aliyun devops projex-list-workitem-comments --id <工作项API-ID>`，按返回 ID 核对 `contentFormat: MARKDOWN` 和原文；不要仅按评论文字匹配。退出码 `1` 表示 HTTP 明确拒绝，`2` 表示本地输入或配置无效，`3` 表示创建结果不确定，必须先查评论列表再决定是否重试。回读失败也不能重新创建。
+
+脚本封装的是已验证的请求，Agent 日常使用无需重新拼 HTTP：
 
 ```http
 POST /oapi/v1/projex/organizations/{organizationId}/workitems/{id}/comments
@@ -29,11 +47,11 @@ Content-Type: application/json
 
 写入字段是 `formatType`，回读字段是 `contentFormat`。使用 [本机凭据入口](access.md#按执行环境选择凭据入口) 注入同一 PAT，由请求进程从环境变量设置 `x-yunxiao-token` 请求头；不将令牌放进命令参数或日志，也无需旧版 AccessKey。当前 API 文档和 CLI 帮助未列出此写入字段，但官方 MCP 源码已传递该字段，上述请求已通过真实 API 与页面验证。
 
-`aliyun-cli-devops 0.9.1` 没有对应评论格式参数，不能直接添加 `--format-type`。可直接调用上述新版 API；使用 MCP 时先确认实际工具 schema 暴露 `formatType`，再设为 `MARKDOWN`。本轮验证了 MCP 对应的 REST 请求，未单独运行 MCP 客户端。网页评论编辑器也提供“切换到Markdown编辑器”入口，已检查可切换。
+`aliyun-cli-devops 0.9.1` 没有对应评论格式参数，不能直接添加 `--format-type`。已有 MCP 连接时先确认实际工具 schema 暴露 `formatType`，再设为 `MARKDOWN`。本轮验证了 MCP 对应的 REST 请求，未单独运行 MCP 客户端。网页评论编辑器也提供“切换到Markdown编辑器”入口，已检查可切换。
 
 ## ProjeX 评论的 CLI 兼容写法
 
-将已经确定的内容表示为 HTML，交给同一 CLI 的 `--content`；无需为此更换凭据或工具。实测可用的基础元素为 `h2`、`p`、`strong`、`em`、`ul/li`、`a`、`code`、`pre/code`、`table/tr/th/td`。正文文字中的 `<`、`>`、`&` 以及属性值按 HTML 规则转义，尤其要保留代码原文。
+仅在项目明确要求 CLI-only，或已确认必须使用 HTML 时采用：将已经确定的内容表示为 HTML，交给 CLI 的 `--content`。API 超时或结果不确定不是切换此入口重发的理由。实测可用的基础元素为 `h2`、`p`、`strong`、`em`、`ul/li`、`a`、`code`、`pre/code`、`table/tr/th/td`。正文文字中的 `<`、`>`、`&` 以及属性值按 HTML 规则转义，尤其要保留代码原文。
 
 多行内容先写临时文件，用带引号的参数保留换行与特殊字符。下例仅展示原生命令参数；执行时仍须通过 [本机凭据入口](access.md#按执行环境选择凭据入口) 注入：
 
