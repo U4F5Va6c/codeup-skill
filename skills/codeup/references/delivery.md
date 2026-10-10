@@ -60,3 +60,6 @@ API 若无原子 expected-head 条件，本地预检不能消除并发推送竞�
 - [工作项关联研发资产](https://help.aliyun.com/zh/yunxiao/user-guide/associated-r-d-assets)
 - [Flow 代码源与服务连接](https://help.aliyun.com/zh/yunxiao/user-guide/pipeline-sources)
 - [Flow 创建流水线](https://help.aliyun.com/zh/yunxiao/developer-reference/createpipeline-create-pipeline)
+- [Flow 任务运行日志](https://help.aliyun.com/zh/yunxiao/developer-reference/getpipelinejobrunlog)
+- [Testhub 创建用例](https://help.aliyun.com/zh/yunxiao/developer-reference/createtestcase)
+- [Testhub 更新测试结果](https://help.aliyun.com/zh/yunxiao/developer-reference/updatetestresult)
