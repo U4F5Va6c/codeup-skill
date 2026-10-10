@@ -15,7 +15,7 @@ npx -y skills add U4F5Va6c/codeup-skill -g -a claude-code codex -s codeup -y
 需要固定版本时安装已发布标签：
 
 ```sh
-npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.3.0/skills/codeup -g -a claude-code codex -s codeup -y
+npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.3.1/skills/codeup -g -a claude-code codex -s codeup -y
 ```
 
 跟随主分支安装的用户可运行 `npx skills update -g -y`（会检查其他已安装 Skills）。固定版本或通过 Dotfiles 快照安装的用户应显式选择新版本再安装。
