@@ -15,14 +15,14 @@ npx -y skills add U4F5Va6c/codeup-skill -g -a claude-code codex -s codeup -y
 需要固定版本时安装已发布标签：
 
 ```sh
-npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.1.3/skills/codeup -g -a claude-code codex -s codeup -y
+npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.2.0/skills/codeup -g -a claude-code codex -s codeup -y
 ```
 
 跟随主分支安装的用户可运行 `npx skills update -g -y`（会检查其他已安装 Skills）。固定版本或通过 Dotfiles 快照安装的用户应显式选择新版本再安装。
 
 ## 接入项目
 
-1. 配置官方新版 `aliyun devops` 插件或官方云效 MCP，按最小权限注入凭据；Git 推送认证单独配置。
+1. 配置官方新版 `aliyun devops` 插件或官方云效 MCP，并记录各执行机器的凭据入口。Skill 在首次访问云效前按[环境选择规则](skills/codeup/references/access.md#按执行环境选择凭据入口)发现并复用该入口；桌面 1Password、服务器包装命令、CI 密钥注入分别处理。Git 推送认证单独配置。
 2. 使用 [项目绑定模板](skills/codeup/assets/issue-tracker.md)，核对组织、ProjeX 项目、Codeup 仓库、工作项类型、必填字段与验收规则。不要提交 Token。
 3. 在项目的 Agent 指令中引用绑定文档和本 Skill。调用 `setup-matt-pocock-skills` 时按其 Other tracker 扩展方式接入，详见 [接入说明](skills/codeup/references/repository-setup.md)。Matt Skills 需要另行安装。
 4. 在测试项目跑通读取工作项、测试、推送、MR 原生关联、当前 SHA 的 CI 检查，再逐步启用写操作。
