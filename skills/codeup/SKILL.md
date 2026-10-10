@@ -16,7 +16,7 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 
 读取仓库现有 `AGENTS.md` / `CLAUDE.md`、`docs/agents/issue-tracker.md`、`docs/agents/domain.md`；只有存在时才读 `docs/agents/triage-labels.md`。遵循项目的词汇、提交格式和验收规则。配置缺失时仍可做明确目标的查询；只补问会影响操作的缺失信息。
 
-首次接入或鉴权失败时读 [访问与工具选择](references/access.md)。只检查凭据是否配置，不读取或显示凭据值。
+首次接入、鉴权失败、反复要求授权或切换执行机器时读 [访问与工具选择](references/access.md)。诊断只检查凭据是否配置；执行时通过安全通道注入，不显示凭据值。
 
 ## 按任务加载
 

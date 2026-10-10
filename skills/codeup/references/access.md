@@ -21,8 +21,6 @@ Region 版使用 PAT 和 `ALIBABA_CLOUD_YUNXIAO_API_BASE_URL`，接入地址取�
 
 API Token 不放进 Skill、仓库、命令参数、URL、报告或聊天。T3 Code 场景下凭据需提供给实际运行 Agent 的 environment/server；手机或交互式终端的变量不会自动出现在服务器进程中。禁止从仓库自动 `source .env` 获取令牌，因为这会执行仓库提供的 Shell 代码。
 
-若项目使用 1Password，先读项目或 Dotfiles 的云效调用指引，复用仅含 `op://` 引用的 env 模板，通过 `op run --env-file=<已核实模板> -- aliyun devops ...` 注入。模板不含明文令牌；跨设备需各自配置可用的凭据通道，不能把本机登录态当作服务器授权。
-
 新版是 `aliyun devops codeup-* / projex-* / flow-* / test-hub-*`，例如：
 
 ```sh
@@ -36,6 +34,29 @@ aliyun devops flow-list-pipelines --page 1 --per-page 20
 区分成功退出码、HTTP 成功和业务成功；创建操作完成后读取返回 ID 对应资源。列表有分页，按响应分页信息取完目标范围；无法确认完整性时标明截断。SearchWorkitems 是只读语义的 POST，不能只凭 HTTP 方法判断风险。
 
 旧 `devops/2021-06-25` API 采用 ROA/AccessKey 签名，与新版 `/oapi/v1` + PAT 不是同一调用协议。只有明确依赖旧接口的项目才走旧版资料，不能把新版 PAT 填入 AK/SK profile。
+
+## 1Password 与执行环境
+
+云效 CLI 使用 PAT；1Password 是凭据来源。先读项目或 Dotfiles 的调用指引，按实际运行 Agent 的机器选择注入方式。
+
+### 桌面集成：减少重复授权
+
+复用仅含 `op://` 引用的 env 模板，通过 `op run --env-file=<已核实模板> -- aliyun devops ...` 注入。macOS 按 TTY 及其创建时间识别会话；同一会话内实际调用会续期，闲置 10 分钟、达到 12 小时上限或 1Password 锁定后须重新授权。弹窗的应用名相同不代表会话相同。
+
+Agent 连续调用时使用任务专用的持久终端。Codex 可用 `exec_command` 启动 Shell 并设置 `tty:true`，保留 `session_id`，后续用 `write_stdin` 发送命令；每次另开一个 PTY 仍是新会话。其他 Agent 使用其持久终端能力；没有时，将已确定的同一阶段命令合并到一次 `op run` 启动的脚本中。2026-10-10 已在 macOS/T3/Codex 验证两次连续注入仅提示一次指纹；其他组合仍需实测。
+
+继续按命令注入短期子进程，任务结束关闭专用终端；不将 PAT 导出至长驻 Shell、不为绕过授权而缓存明文或定时空调用续期。保留输出遮蔽，避免日志打印凭据；锁定后已启动的子进程仍可完成当前操作。
+
+### 无桌面服务器：提供独立凭据通道
+
+远端不会继承 Mac 的 Touch ID 或桌面登录态；复制 `op://` 引用也不提供读取权限，须另有获准读取条目的凭据。按已授权的部署方式选择：
+
+- **下发服务器专用 PAT**：在凭据库保管可单独撤销的 PAT，经已核实的 SSH 通道或部署系统下发，仅存于目标用户的私有配置目录（目录 700、文件 600、仓库外）。运行入口将文件内容作为数据读取，只注入本次 CLI 子进程；不 `source` 凭据文件。关闭 Shell 跟踪；下发失败或内容为空时保留旧凭据，校验后再原子替换。轮换须同步到服务器；不依赖 Mac 持续在线。
+- **1Password Service Account**：若账户支持且已授权配置，使用专用保险库、只读 Service Account 和安全注入的 `OP_SERVICE_ACCOUNT_TOKEN`，再运行 `op run`。不能授权访问内置 Personal、Private、Employee 或默认 Shared 保险库。服务账户令牌本身也需要保护，不能放入 Skill、仓库或命令参数。
+
+仅讨论方案不执行凭据下发；不把个人 1Password 登录态部署到共享服务器。共享服务器的 root 可读取文件和进程内存，700/600 不能防 root；若不能接受该边界，使用可信执行环境。服务器专用 PAT 便于单独撤销，但不会自动收窄所属用户的仓库范围，须同时核对令牌权限点与平台成员权限。
+
+配置后在实际 Agent 环境验证身份、目标 Codeup 仓库与 ProjeX 项目的只读查询；只报告退出码和脱敏结果。终端里导出的变量不会自动进入已有的后台服务，可使用按命令注入的运行入口，避免将令牌挂在整个 Agent 服务上。Git SSH/HTTPS 认证另行验证，已有 SSH 密钥不能代替 ProjeX/Flow API 的 PAT。
 
 ## 官方 MCP
 
@@ -63,3 +84,6 @@ aliyun devops flow-list-pipelines --page 1 --per-page 20
 - [官方 MCP、认证与工具集](https://help.aliyun.com/zh/yunxiao/developer-reference/cloud-effect-mcp-tool-instructions)
 - [API 入口：新版与旧版](https://help.aliyun.com/zh/yunxiao/developer-reference/)
 - [服务接入点](https://help.aliyun.com/zh/yunxiao/developer-reference/service-access-point-domain)
+- [云效 PAT 权限与有效期](https://help.aliyun.com/zh/yunxiao/user-guide/personal-access-token)
+- [1Password 终端授权与会话模型](https://www.1password.dev/cli/app-integration-security)
+- [1Password Service Account 与保险库限制](https://www.1password.dev/service-accounts/get-started)
