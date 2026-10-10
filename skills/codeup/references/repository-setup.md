@@ -8,15 +8,16 @@
 
 用户已指定 ProjeX 时，tracker 选择已确定，不再询问 GitHub/本地 Markdown。读取 [issue-tracker 模板](../assets/issue-tracker.md)，补入已验证资源，展示待写文档和指令块供审阅，再应用。
 
-遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有 `## Agent skills` 原位更新，不覆盖其他约定。
+遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有共享/导入机制时，更新被共享的规范文件，保留引用入口。已有 `## Agent skills` 原位更新，不覆盖其他约定。
 
 ```markdown
 ## Agent skills
 
 ### Issue tracker
 
-需求、缺陷和任务以 ProjeX 为准，代码评审使用 Codeup。执行这些任务前读取
-`docs/agents/issue-tracker.md` 并加载 `codeup` Skill。
+需求、缺陷和任务以 ProjeX 为准，代码评审使用 Codeup。追踪工作项、创建或评审 MR、
+合并分支及同步上游前，读取 `docs/agents/issue-tracker.md` 并加载 `codeup` Skill，
+合并策略按其交付指引执行。
 
 ### Domain docs
 
@@ -24,6 +25,8 @@
 ```
 
 单上下文使用 [domain 模板](../assets/domain.md)。发现真实 monorepo 且用户选择多上下文时再调整；不要先创建空 glossary 或 ADR。
+
+合并规则集中维护在 [交付指引](delivery.md#分支角色与默认合并策略)；项目指令只保留加载入口，项目有不同策略时在 tracker 文档写明例外。无需将默认策略复制到全局或项目级 `AGENTS.md` / `CLAUDE.md`；双 Agent 共用一份规范，另一入口沿用项目的引用机制。
 
 ## Triage 条件
 
