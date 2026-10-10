@@ -26,7 +26,9 @@
 
 `CreateWorkitem` 的基本必填字段为 `spaceId`、`workitemTypeId`、`subject`、`assignedTo`，项目配置可能要求额外字段。Markdown 描述显式设置 `formatType=MARKDOWN`。先发现类型字段配置和成员 ID；缺少必填负责人时只补问负责人，不猜人选。
 
-按依赖顺序创建：先创建阻塞项，记录真实 API ID，再创建依赖项。设置 `parentId` 前验证允许的父子类型。原生依赖关系只有确认操作和方向后才写；不可用时用正文 `Blocked by` 和工作项链接明确记录，并说明这是文本依赖。不要把普通关联或外部资源关系冒充阻塞。
+按依赖顺序创建：先创建阻塞项，记录真实 API ID，再创建依赖项。设置 `parentId` 前验证允许的父子类型。使用 `projex-list-workitem-relation-workitem-types --id <类型ID> --relation-type <关系类型>`，分别传入 `SUB` 和 `DEPEND_ON` 检查两类约束：允许子任务不代表允许任务间依赖。原生依赖关系只有确认操作和方向后才写；不可用时用正文 `Blocked by` 和工作项链接明确记录，并说明这是文本依赖。不要把普通关联或外部资源关系冒充阻塞。
+
+2026-10-10 实测：默认组织可能未配置 Task → Task 的依赖，查询返回 `[]`，创建返回 400“类型约束”。该约束由组织全局设置的“类型间关系”管理，通常需要管理员；不要擅自改工作项类型或以普通关联替代。依赖允许时，`projex-create-workitem-relation-record --id <依赖方> --workitem-id <被依赖方> --relation-type DEPEND_ON`，随后分别回读依赖方的 `DEPEND_ON` 与被依赖方的 `DEPENDED_BY`。
 
 若用户仅要求拆分和创建子项，保留父项状态，不自动结束父项。发生部分失败时给出已创建项的映射，从失败点继续，避免整批重建。
 
@@ -42,7 +44,9 @@
 
 更新前回读工作项及工作流，解析目标状态的真实 ID、权限和必填字段；工作流状态列表不自动证明任意两状态可直接跳转。仅更新需要的字段，保留并发修改和原有无关标签。
 
-`UpdateWorkitem` 请求体为字段映射，创建/更新的自定义字段和多值编码可能不同，依当前文档/schema 构造。更新返回无正文也可能成功，必须回读确认。
+`UpdateWorkitem` 请求体为字段映射，创建/更新的自定义字段和多值编码可能不同，依当前文档/schema 构造。更新返回无正文也可能成功，必须回读确认。新版 CLI 使用 `--biz-body` 传 JSON；已验证状态字段形状为 `{"status":"<状态ID>"}`，状态值仍须按目标项目查询。
+
+`aliyun-cli-devops 0.9.1` 的 `projex-get-workitem-workflow-info` 要求 `--x-tenant-id`，实测传组织 ID 会返回 401“企业不存在”。先核对官方请求示例；同身份调用官方 `GET /oapi/v1/projex/organizations/{organizationId}/workitems/{id}/workflow` 并省略该头可成功。令牌仍从环境注入，不打印请求头。该响应只列状态，不能替代允许流转方向的验证。
 
 MR 合并后的状态按项目约定进入待测/待验收/完成，不默认等于业务验收。跨仓库工作项应核对所有必需 MR、目标版本 CI 和验收项。已配置的 ProjeX 自动化负责联动时，优先读回结果，避免 Agent 再次推进。
 
@@ -55,3 +59,4 @@ MR 合并后的状态按项目约定进入待测/待验收/完成，不默认等
 - [工作项工作流](https://help.aliyun.com/zh/yunxiao/developer-reference/getworkitemworkflowinfo-get-work-item-workflow-information)
 - [更新工作项](https://help.aliyun.com/zh/yunxiao/developer-reference/updateworkitem)
 - [研发联动](https://help.aliyun.com/zh/yunxiao/user-guide/devops-linkage)
+- [类型间关系配置](https://help.aliyun.com/zh/yunxiao/user-guide/work-item-relationship-customization-settings/)
