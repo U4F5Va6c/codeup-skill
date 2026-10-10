@@ -24,7 +24,7 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 | 本次任务 | 参考 |
 |---|---|
 | 创建、拆分、查询、标记或推进需求/缺陷/任务 | [ProjeX 工作项](references/projex.md) |
-| 分支、提交、推送、合并请求、评审、测试、CI/CD | [代码交付](references/delivery.md) |
+| 分支、提交、推送、合并请求、评审、合并策略、测试、CI/CD | [代码交付](references/delivery.md)；合并前读取其中的默认策略 |
 | 初始化仓库、接入 setup-matt-pocock-skills / to-spec / to-tickets / triage | [仓库接入](references/repository-setup.md) |
 
 ## 资源身份
