@@ -1,5 +1,27 @@
 # 访问与工具选择
 
+## 按执行环境选择凭据入口
+
+先确定命令在哪里执行，再选择凭据。相同 Skill 安装在多台机器上，不意味着它们共用令牌、1Password 会话或 Shell 环境。
+
+1. **核对执行环境**：在将要运行业务命令的终端确认系统、主机和当前用户（如 `uname -s`、`hostname`、`id -un`）。SSH、容器、T3 远程环境都以目标进程为准；从手机发起请求不改变服务器的身份。只检查必要变量是否存在，不输出整个环境、凭据文件或请求头。
+2. **发现本机约定**：读取项目 `AGENTS.md` / `CLAUDE.md`、`docs/agents/issue-tracker.md` 中的认证指引。使用 Dotfiles 时，按已有指针定位仓库；无指针则检查 `~/dotfiles/guides/aliyun-devops.md`，并读取匹配当前设备的 `machines/` 记录。主机名、SSH 别名和设备文件名可能不同，依据记录核对，不凭文件名猜测。没有 Dotfiles 时沿用本机已配置的凭据管理方式，无需为使用本 Skill 新建 Dotfiles。
+3. **选定入口**：按下表匹配已核实的本机配置，检查命令实际路径和非敏感的组织/接入点。操作系统或“装了 op”只能说明能力，不能证明应使用哪个账号。项目决定目标资源，本机配置决定如何注入；两者的组织或接入点不匹配时，先解决配置冲突，不能拿另一台机器的凭据尝试。
+4. **验证并复用**：通过所选入口查询身份及本次目标资源，成功后在同一执行环境复用；每次 CLI 调用都保留注入入口。更换执行环境、组织或凭据配置后重新核对。已验证的 MCP 连接无需另配 CLI；从 MCP 切换到 CLI 时独立确认注入方式。
+
+| 本机已核实的配置 | 调用方式 |
+|---|---|
+| 已连接的官方 MCP，身份、组织和接入点与任务匹配 | 使用该连接的工具及 schema；不为此读取本地 PAT |
+| 服务器已有按命令注入的入口，例如 `aliyun-devops` | 核对部署指引与 `command -v aliyun-devops` 的路径，调用 `aliyun-devops <子命令> <参数>`；由入口读取该机 PAT |
+| 桌面机使用 1Password CLI 集成 | 按本机指引指定账户和 env 模板，用 `op run --env-file=<本机模板> -- aliyun devops <子命令> <参数>`；连续调用复用同一持久终端 |
+| CI / 容器 / 无桌面服务器由作业密钥或 Service Account 注入 | 沿用该环境已配置的注入通道；只有确认本次 CLI 进程会收到正确凭据时才直接调用 `aliyun devops <子命令> <参数>` |
+
+`aliyun-devops` 是部署方提供的入口示例，并非官方 CLI 自带命令；本机约定使用别的入口时遵循实际配置。它若已包装 `aliyun devops`，参数从子命令开始，不再重复传入 `devops`。原生 `aliyun devops` 不会自动读取部署方的 PAT 文件；父 Shell 中没有 Token 也不代表按命令注入的入口不可用。
+
+例如，本机指引确认服务器使用 `aliyun-devops` 后，身份查询为 `aliyun-devops base-get-user-by-token`；使用桌面 1Password 的机器则把同一子命令放在上述 `op run ... -- aliyun devops` 之后。真实账户、env 模板、PAT 路径、组织和接入点由机器指引提供，不从其他设备复制。
+
+本机已配置的通道缺失或鉴权失败时，报告缺失项及本机修复方式；不要静默改用另一台机器、其他账号或个人 1Password 登录态。只有确需用户提供未知的机器配置时才提问；已授权的安装与修复可继续执行。云效业务授权不自动包含创建、迁移或轮换凭据。
+
 ## 官方新版 CLI
 
 检查 `command -v aliyun`、`aliyun version` 及已安装插件。需要安装且在任务授权范围内时，按官方安装说明安装 CLI，再显式安装云效插件：
@@ -21,7 +43,7 @@ Region 版使用 PAT 和 `ALIBABA_CLOUD_YUNXIAO_API_BASE_URL`，接入地址取�
 
 API Token 不放进 Skill、仓库、命令参数、URL、报告或聊天。T3 Code 场景下凭据需提供给实际运行 Agent 的 environment/server；手机或交互式终端的变量不会自动出现在服务器进程中。禁止从仓库自动 `source .env` 获取令牌，因为这会执行仓库提供的 Shell 代码。
 
-新版是 `aliyun devops codeup-* / projex-* / flow-* / test-hub-*`，例如：
+新版是 `aliyun devops codeup-* / projex-* / flow-* / test-hub-*`。以下展示原生命令语法，业务调用须按上节替换或包裹命令前缀；版本与 `--help` 查询无需读取 PAT：
 
 ```sh
 aliyun devops codeup-list-repositories --page 1 --per-page 20
@@ -37,11 +59,11 @@ aliyun devops flow-list-pipelines --page 1 --per-page 20
 
 ## 1Password 与执行环境
 
-云效 CLI 使用 PAT；1Password 是凭据来源。先读项目或 Dotfiles 的调用指引，按实际运行 Agent 的机器选择注入方式。
+云效 CLI 使用 PAT；1Password 可以是凭据来源。入口选择完成后，只读取与该机注入方式对应的小节。
 
 ### 桌面集成：减少重复授权
 
-复用仅含 `op://` 引用的 env 模板，通过 `op run --env-file=<已核实模板> -- aliyun devops ...` 注入。macOS 按 TTY 及其创建时间识别会话；同一会话内实际调用会续期，闲置 10 分钟、达到 12 小时上限或 1Password 锁定后须重新授权。弹窗的应用名相同不代表会话相同。
+复用本机已核实的 env 模板：敏感值使用 `op://` 引用，组织等非敏感配置可以是常量。通过 `op run --env-file=<已核实模板> -- aliyun devops ...` 注入。macOS 按 TTY 及其创建时间识别会话；同一会话内实际调用会续期，闲置 10 分钟、达到 12 小时上限或 1Password 锁定后须重新授权。弹窗的应用名相同不代表会话相同。
 
 Agent 连续调用时使用任务专用的持久终端。Codex 可用 `exec_command` 启动 Shell 并设置 `tty:true`，保留 `session_id`，后续用 `write_stdin` 发送命令；每次另开一个 PTY 仍是新会话。其他 Agent 使用其持久终端能力；没有时，将已确定的同一阶段命令合并到一次 `op run` 启动的脚本中。2026-10-10 已在 macOS/T3/Codex 验证两次连续注入仅提示一次指纹；其他组合仍需实测。
 
