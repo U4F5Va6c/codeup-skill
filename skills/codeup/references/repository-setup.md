@@ -31,18 +31,18 @@ ProjeX 项目按产品、团队或共同交付目标组织需求；Codeup 仓库
 
 用户已指定 ProjeX 时，tracker 选择已确定，不再询问 GitHub/本地 Markdown。读取 [issue-tracker 模板](../assets/issue-tracker.md)，补入已验证资源，展示待写文档和指令块供审阅，再应用。
 
-遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有共享/导入机制时，更新被共享的规范文件，保留引用入口。已有 `## Agent skills` 原位更新，不覆盖其他约定。
+遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有共享/导入机制时，更新被共享的规范文件，保留引用入口。已有 `## Agent skills` 原位更新，不覆盖其他约定；该标题是 setup 识别配置块的依据，保留英文，其下子标题与 tracker 文档标题用中文。
 
 ```markdown
 ## Agent skills
 
-### Issue tracker
+### 工作项追踪
 
 需求、缺陷和任务以 ProjeX 为准，代码评审使用 Codeup。追踪工作项、创建或评审 MR、
 合并分支及同步上游前，读取 `docs/agents/issue-tracker.md` 并加载 `codeup` Skill，
 合并策略按其交付指引执行。
 
-### Domain docs
+### 领域文档
 
 采用 single-context；探索相关领域前读取 `docs/agents/domain.md`。
 ```
@@ -64,8 +64,9 @@ ProjeX 项目按产品、团队或共同交付目标组织需求；Codeup 仓库
 | to-spec | 需求工作项承载规格，保留其原有测试边界确认流程 |
 | to-tickets | 审阅后的纵向切片作为任务/子项，保留真实依赖，不自动关闭父项 |
 | implement-spec | 按 [执行阶段映射](projex.md#matt-执行阶段与业务状态)计算 frontier；各仓库维护自己的集成分支、MR 和证据 |
+| wayfinder | 需求作决策图、任务子项作决策票，见 [Wayfinder 映射](projex.md#wayfinder-映射) |
 | triage（若安装） | 按项目的分诊映射读取和更新，不调用 gh label |
-| pr / code-review | 内容遵循当前 Skill、用户和项目约定，MR 模板仅在缺少约定时参考；独立双轴审阅与平台审批分别核验 |
+| pr / code-review | 内容遵循当前 Skill、用户和项目约定，MR 模板仅在缺少约定时参考；提交后缀中的展示编号按 tracker 的“读取相关工作项”章节读取；独立双轴审阅与平台审批分别核验 |
 | domain-modeling | 沿用 glossary/ADR，不把跟踪平台差异混入业务术语 |
 
 Matt Skills 决定设计、拆票、实现与审阅方法；本 Skill 负责云效对象、调用及结果核验；tracker 保存项目资源与状态映射；平台保存业务进度；设备部署文档保存 CLI 与凭据入口。正文、评论、MR 的内容和结构沿用当前 Skill、用户与项目约定，本 Skill 只处理平台格式兼容。遇到具体 Skill 硬编码 `gh`，先检查其可配置点；必要时对该 Skill 做最小改动，不全局替换系统 `gh`。
@@ -82,4 +83,5 @@ setup 只编辑一个已有指令文件，不能假定另一个 Agent 会自动�
 
 - [ProjeX 项目关联代码库与流水线](https://help.aliyun.com/zh/yunxiao/product-overview/2023-1)
 - [MR 流水线合并检查](https://help.aliyun.com/zh/yunxiao/user-guide/extending-code-detection-through-pipelining)
+- Matt Skills 适配基线：`mattpocock/skills` 2026-10-10 安装版，`skills` 锁文件的 skillFolderHash 为 setup-matt-pocock-skills `aafaabf96fa3`、wayfinder `32b0ce970b13`、to-tickets `2dee20ad722a`、implement-spec `0cfefc751d0c`、code-review `fee7bb5fdddc`；tracker 章节以 setup 的 `issue-tracker-github.md` 为准，hash 变化后重新核对。
 - 关系、状态与 Webhook 的官方来源见 [ProjeX](projex.md#来源) 和 [自动化](automation.md#来源)；平台设置于 2026-10-11 核对，仍需按目标租户权限实测。

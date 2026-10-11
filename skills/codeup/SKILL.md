@@ -28,6 +28,7 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 | 分支、提交、推送、合并请求、评审、合并策略、测试、CI/CD | [代码交付](references/delivery.md)；合并前读取其中的默认策略 |
 | 新建或接入项目、关联仓库和配套服务、接入 Matt Skills | [仓库初始化与接入](references/repository-setup.md) |
 | implement-spec 的任务领取、依赖解除、集成完成与关闭 | [ProjeX 状态映射](references/projex.md#matt-执行阶段与业务状态)；分支操作按代码交付指引 |
+| wayfinder 的 map、决策票、认领、frontier 与关闭 | [Wayfinder 映射](references/projex.md#wayfinder-映射) |
 | 配置状态联动、Webhook 或事件唤醒 | [自动化与事件](references/automation.md)；先区分事件方向和负责推进状态的主体 |
 
 ## 资源身份

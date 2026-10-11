@@ -1,4 +1,4 @@
-# Issue tracker：ProjeX + Codeup
+# 工作项追踪：ProjeX + Codeup
 
 这是接入模板。填入并核对本项目资源后才能作为已生效配置；不在此保存令牌。
 
@@ -34,7 +34,7 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 
 进行需求追踪、拆票、评审发布、合并分支或同步上游前加载 `codeup` Skill；合并方式读取其交付指引，本文只记录项目例外。按该 Skill 的固定调用规则和本机认证指引选择工具与注入入口；本地代码操作使用 Git。
 
-- 读取：使用工作项 API ID 获取内容、评论和关系；展示编号另存为 serialNumber。
+- 读取：`projex-get-workitem --id` 接受 API ID 或 serialNumber；评论和关系用返回的 API ID 查询，两者分别保存。
 - 创建：根据内容选择需求、缺陷或任务类型，补齐负责人和类型要求字段。
 - 子项：使用原生 parentId，并验证父子类型合法。
 - 相关工作：使用 ASSOCIATED 表示无向关联；可用于跳转和关联项联动，不作为任务领取的阻塞边。
@@ -46,3 +46,26 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 - 联动：按 codeup Skill 的自动化指引读取已配置规则的结果；外部事件只能触发重新核对和获准操作，不能自动扩大执行权限。
 
 列出已创建/更新的真实 URL 和 ID，说明本地检查、CI、合并及验收各自结果。跨仓库项目汇总所有必需 MR；操作中断时保留已完成资源映射，续跑不得重复创建。
+
+## MR 作为分诊入口
+
+对应 Matt 的 `Pull requests as a triage surface`。**MR 作为需求入口：否。**（`triage` 读取此开关；未安装时保持“否”。）
+
+## 发布到工作项追踪
+
+对应 Matt 的 `publish to the issue tracker`。按内容在本项目创建需求、缺陷或任务（见上方“创建”），回读 `id` 与 `serialNumber`。
+
+## 读取相关工作项
+
+对应 Matt 的 `fetch the relevant ticket`。按上方“读取”执行；提交信息后缀 `-#<serialNumber>` 即展示编号。
+
+## Wayfinder 操作
+
+对应 Matt 的 `Wayfinding operations`，供 `/wayfinder` 使用。规则见 codeup Skill 的 Wayfinder 映射，这里只填本项目的取值。
+
+- **决策图（Map）**：需求类型 ID 待填，标签 `wayfinder:map` 的 ID 待填。
+- **子票（Child ticket）**：任务类型 ID 待填，四种 `wayfinder:<type>` 标签 ID 待填。
+- **阻塞（Blocking）**：任务间 `DEPEND_ON` 是否可用待核对。
+- **可领取队列（Frontier query）**：未认领状态 ID 待填；终态（完成、取消）ID 待填。
+- **认领（Claim）**：认领后状态 ID 待填。
+- **解决（Resolve）**：完成状态 ID、超出范围用的取消状态 ID 待填。

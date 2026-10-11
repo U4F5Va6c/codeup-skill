@@ -68,6 +68,8 @@ aliyun devops flow-list-pipelines --page 1 --per-page 20
 
 调用前看具体命令的 `--help`；参数通常为 kebab-case，REST 字段通常为 camelCase，不能机械替换。结构化参数依帮助构造。多行内容先写临时文件；优先使用真实支持的文件参数或结构化工具参数。不要假定每个命令都有 `--body-file`、`--json`、`--all`、`--dry-run`。
 
+2026-10-11 对照 `aliyun-cli-devops 0.9.1` 帮助实测的全局参数：`--cli-query '<JMESPath>'` 在本地裁剪输出，查询时只取所需字段，如 `--cli-query '[].{id:id,sn:serialNumber,st:status.name}'`；`--cli-dry-run` 只打印方法、URL 和请求体而不发送，适合写操作前核对参数。dry-run 会显示令牌前 4 位，输出不外发。全局 `--pager` 对返回顶层数组的接口（如 `projex-search-workitems`）实测不可用，分页仍按 `--page` 逐页取完。
+
 区分成功退出码、HTTP 成功和业务成功；创建操作完成后读取返回 ID 对应资源。列表有分页，按响应分页信息取完目标范围；无法确认完整性时标明截断。SearchWorkitems 是只读语义的 POST，不能只凭 HTTP 方法判断风险。
 
 旧 `devops/2021-06-25` API 采用 ROA/AccessKey 签名，与新版 `/oapi/v1` + PAT 不是同一调用协议。只有明确依赖旧接口的项目才走旧版资料，不能把新版 PAT 填入 AK/SK profile。
