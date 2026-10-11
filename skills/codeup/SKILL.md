@@ -24,9 +24,11 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 | 本次任务 | 参考 |
 |---|---|
 | 编写或更新工作项正文、MR 描述与评论 | [Markdown 与富文本](references/text-format.md)；内容要求沿用当前流程 Skill、用户与项目约定 |
-| 创建、拆分、查询、标记或推进需求/缺陷/任务 | [ProjeX 工作项](references/projex.md) |
+| 创建、拆分、查询、标记或推进需求/缺陷/任务，维护父子或依赖关系 | [ProjeX 工作项](references/projex.md)；关系读写按其中的类型约束、方向与双向回读步骤 |
 | 分支、提交、推送、合并请求、评审、合并策略、测试、CI/CD | [代码交付](references/delivery.md)；合并前读取其中的默认策略 |
-| 初始化仓库、接入 setup-matt-pocock-skills / to-spec / to-tickets / triage | [仓库接入](references/repository-setup.md) |
+| 新建或接入项目、关联仓库和配套服务、接入 Matt Skills | [仓库初始化与接入](references/repository-setup.md) |
+| implement-spec 的任务领取、依赖解除、集成完成与关闭 | [ProjeX 状态映射](references/projex.md#matt-执行阶段与业务状态)；分支操作按代码交付指引 |
+| 配置状态联动、Webhook 或事件唤醒 | [自动化与事件](references/automation.md)；先区分事件方向和负责推进状态的主体 |
 
 ## 资源身份
 
@@ -54,4 +56,4 @@ description: 在阿里云云效中管理 Codeup 仓库与合并请求、ProjeX �
 
 汇报实际完成的工作，附服务端返回或已验证的 URL / ID。分别说明“本地测试通过”“CI 通过”“已合并”“已部署”“业务验收完成”。缺少对应证据时保留为未验证。
 
-文档基于 2026-10-10 的官方资料；命令清单与项目字段会变化，参考文件中的发现步骤优先于记忆。
+平台初始化、关系与联动文档于 2026-10-11 核对官方资料；命令清单与项目字段会变化，参考文件中的发现步骤优先于记忆。

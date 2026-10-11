@@ -15,12 +15,14 @@ npx -y skills add U4F5Va6c/codeup-skill -g -a claude-code codex -s codeup -y
 需要固定版本时安装已发布标签：
 
 ```sh
-npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.3.1/skills/codeup -g -a claude-code codex -s codeup -y
+npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.3.2/skills/codeup -g -a claude-code codex -s codeup -y
 ```
 
 跟随主分支安装的用户可运行 `npx skills update -g -y`（会检查其他已安装 Skills）。固定版本或通过 Dotfiles 快照安装的用户应显式选择新版本再安装。
 
 ## 接入项目
+
+全新项目按 [初始化指引](skills/codeup/references/repository-setup.md#平台初始化) 建立项目/仓库、追踪、CI 与必要门禁；ProjeX 项目按产品或交付目标组织，可对应多个仓库。已有项目按下面步骤补齐绑定。
 
 1. 默认配置官方新版 `aliyun devops` 插件；已有官方云效 MCP 可沿用。记录各执行机器的凭据入口，Skill 按[环境选择规则](skills/codeup/references/access.md#按执行环境选择凭据入口)发现并复用；桌面 1Password、服务器包装命令、CI 密钥注入分别处理。随包 API 脚本需 Python 3，并复用同一注入通道。Git 推送认证单独配置。
 2. 使用 [项目绑定模板](skills/codeup/assets/issue-tracker.md)，核对组织、ProjeX 项目、Codeup 仓库、工作项类型、必填字段与验收规则。不要提交 Token。
@@ -40,9 +42,11 @@ npx -y skills add https://github.com/U4F5Va6c/codeup-skill/tree/v0.3.1/skills/co
 | [文本格式](skills/codeup/references/text-format.md) | Markdown 发布、ProjeX 评论脚本与平台渲染限制；内容结构由当前流程决定 |
 | [ProjeX](skills/codeup/references/projex.md) | 需求、缺陷、任务、字段、依赖与状态 |
 | [交付](skills/codeup/references/delivery.md) | Git、MR、评审、Flow、Testhub 与验收 |
+| [初始化与 Matt 接入](skills/codeup/references/repository-setup.md) | 项目/仓库边界、配套服务配置、跨仓库协作与 Agent 入口 |
+| [自动化与事件](skills/codeup/references/automation.md) | Codeup → ProjeX 联动、外部 Agent 唤醒及各自配置边界 |
 | [工具选择](docs/tooling.md) | 与 gh、第三方 codeup-cli、T3 Provider 的边界 |
 
-2026-10-10 已在隔离云效资源验证工作项父子关系、独立工作树实现、CLI 测试、推送、MR 原生关联与 Agent 评审、准确提交的 Flow CI，以及 Testhub 执行记录。原生任务依赖受组织关系类型配置限制，完整流程验收仍未通过；T3 的 Codeup MR 线程关联尚不支持。包结构、相对链接和可移植性检查已通过；API 参数以当前官方文档和已安装工具 schema 为准。
+父子、普通关联和原生依赖分别受组织的类型关系配置约束；接入时按具体源/目标类型查询并验证，不把某个租户的限制当作平台缺失。T3 的 Codeup MR 线程关联尚不支持。包结构检查不替代真实平台验证；API 参数以当前官方文档和已安装工具 schema 为准。
 
 ## 维护
 
