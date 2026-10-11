@@ -20,7 +20,7 @@
 
 查询筛选 `conditions` 是 JSON 字符串，里面的字段、运算符和选项依真实元数据或官方示例。不要把显示名称填进 ID，也不要把嵌套对象当成已编码字符串。分页响应提供 `x-next-page` 等信息，CLI 是否暴露这些信息需现场核对。
 
-`projex-get-workitem --id` 同时接受 API `id` 和展示编号 `serialNumber`（如提交后缀 `-#PROJ-12` 中的 `PROJ-12`），返回中的 `id` 用于后续写操作。网页链接用展示编号：`https://devops.aliyun.com/projex/req/<serialNumber>`、`.../projex/task/<serialNumber>`，打开后跳转到项目内详情页。
+2026-10-11 中心版实测：`projex-get-workitem --id` 同时接受 API `id` 和展示编号 `serialNumber`（如提交后缀 `-#PROJ-12` 中的 `PROJ-12`），返回中的 `id` 用于后续写操作。网页链接用展示编号：`https://devops.aliyun.com/projex/req/<serialNumber>`、`.../projex/task/<serialNumber>`，打开后跳转到项目内详情页。
 
 ## 创建与拆分
 
@@ -69,7 +69,7 @@ projex-list-workitem-relation-records --id <A的工作项ID> --relation-type DEP
 
 **认领用状态，不用负责人。** wayfinder 以“无 assignee”表示未认领，而 ProjeX 创建时必填 `assignedTo`，所有票天生有负责人。按 tracker 映射：初始状态（如待处理）= 未认领，认领 = 推进到开发中对应状态（如处理中），作为本会话第一个写操作并回读；解决 = 完成状态；判定超出范围 = 取消状态。
 
-**Frontier**：`projex-list-workitem-relation-records --id <map> --relation-type SUB` 取子项；保留处于未认领状态的；再对每项读 `DEPEND_ON`，所有 blocker 都已到完成状态才算解除阻塞；按 map 正文顺序取第一个。用 `--cli-query 'status.id'`、`'[].resourceId'` 只取所需字段。
+**Frontier**：`projex-list-workitem-relation-records --id <map> --relation-type SUB` 取子项；保留处于未认领状态的；再对每项读 `DEPEND_ON`，所有 blocker 都已到终态（完成或取消）才算解除阻塞。map 正文不列未关闭的票，按子项创建顺序取最早的一个：`SUB` 记录默认新的在前，CLI 的 `sort_by` 对 `gmtCreate` 报错，取出后在本地排序。用 `--cli-query 'status.id'`、`'[].resourceId'` 只取所需字段。
 
 **Resolve**：答案用 [Markdown 评论脚本](text-format.md#projex-评论固定使用-markdown-脚本) 写入并按 ID 回读，再推进到完成状态。map 的 Decisions so far 通过读回 `description`、追加一行 `- [<票标题>](https://devops.aliyun.com/projex/task/<serialNumber>)：<一句结论>`、以 `{"description":...,"formatType":"MARKDOWN"}` 整体更新；读和写之间不插入其他编辑，避免覆盖并发修改。research 票的分支只推送，不建 MR。
 

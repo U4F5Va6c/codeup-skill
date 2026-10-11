@@ -19,7 +19,6 @@
 | 需求 / 缺陷 / 任务的类型 ID | 从当前项目元数据读取 |
 | 必填字段和默认负责人 | 从项目约定及字段配置确认 |
 | 就绪标记 | 待选择已有原生标签、既有字段，或明确约定的正文 Agent readiness 字段 |
-| wayfinder 标签 | 使用 wayfinder 时记录 `wayfinder:map` 与四种 `wayfinder:<type>` 的标签 ID；未使用可留空 |
 | 关系映射 | 分别记录父子、ASSOCIATED、DEPEND_ON 允许的源/目标类型组合；变更后重新查询并验证方向，记录不可用时的明确回退方式 |
 | 业务状态与关闭标准 | 按各工作项类型填写实际状态 ID、合法流转、任务验收范围和父需求验收规则 |
 | 依赖解除条件 | 待约定可供后继使用的集成代码/制品/部署证据；与任务关闭分别判断 |
@@ -35,7 +34,7 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 
 进行需求追踪、拆票、评审发布、合并分支或同步上游前加载 `codeup` Skill；合并方式读取其交付指引，本文只记录项目例外。按该 Skill 的固定调用规则和本机认证指引选择工具与注入入口；本地代码操作使用 Git。
 
-- 读取：使用工作项 API ID 获取内容、评论和关系；展示编号另存为 serialNumber。
+- 读取：`projex-get-workitem --id` 接受 API ID 或 serialNumber；评论和关系用返回的 API ID 查询，两者分别保存。
 - 创建：根据内容选择需求、缺陷或任务类型，补齐负责人和类型要求字段。
 - 子项：使用原生 parentId，并验证父子类型合法。
 - 相关工作：使用 ASSOCIATED 表示无向关联；可用于跳转和关联项联动，不作为任务领取的阻塞边。
@@ -58,15 +57,15 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 
 ## 读取相关工作项
 
-对应 Matt 的 `fetch the relevant ticket`。`projex-get-workitem --id <serialNumber 或 API id>`，两者都接受；提交信息后缀 `-#<serialNumber>` 即展示编号。读取评论和关系时用返回的 `id`。
+对应 Matt 的 `fetch the relevant ticket`。按上方“读取”执行；提交信息后缀 `-#<serialNumber>` 即展示编号。
 
 ## Wayfinder 操作
 
-对应 Matt 的 `Wayfinding operations`，供 `/wayfinder` 使用，细节按 codeup Skill 的 Wayfinder 映射执行。
+对应 Matt 的 `Wayfinding operations`，供 `/wayfinder` 使用。规则见 codeup Skill 的 Wayfinder 映射，这里只填本项目的取值。
 
-- **决策图（Map）**：一个需求，打 `wayfinder:map` 标签，正文为 Destination / Notes / Decisions so far / Not yet specified / Out of scope（Markdown）。
-- **子票（Child ticket）**：决策图的任务子项（`--parent-id`），打 `wayfinder:<type>` 标签。
-- **阻塞（Blocking）**：原生 `DEPEND_ON`，从被阻塞的票指向 blocker，双向回读。
-- **可领取队列（Frontier query）**：决策图 `SUB` 子项中处于未认领状态、且所有 `DEPEND_ON` blocker 已完成的票，按决策图顺序取第一个。
-- **认领（Claim）**：状态从未认领推进到开发中对应状态（填写上方状态映射的实际 ID），作为本会话第一个写操作；不以负责人表示认领。
-- **解决（Resolve）**：Markdown 评论写答案 → 推进到完成状态 → 在决策图的 Decisions so far 追加一行链接；超出范围的票推进到取消状态，并记入 Out of scope。
+- **决策图（Map）**：需求类型 ID 待填，标签 `wayfinder:map` 的 ID 待填。
+- **子票（Child ticket）**：任务类型 ID 待填，四种 `wayfinder:<type>` 标签 ID 待填。
+- **阻塞（Blocking）**：任务间 `DEPEND_ON` 是否可用待核对。
+- **可领取队列（Frontier query）**：未认领状态 ID 待填；终态（完成、取消）ID 待填。
+- **认领（Claim）**：认领后状态 ID 待填。
+- **解决（Resolve）**：完成状态 ID、超出范围用的取消状态 ID 待填。

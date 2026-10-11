@@ -9,7 +9,7 @@ python3 -m unittest discover -s tests -v
 npx -y skills add . --list
 ```
 
-CI 检查入口元数据、包内相对链接、机器路径及 API 脚本的离线行为。`tests/test_matt_contract.py` 只在本机装有 Matt Skills 时运行：对照 `setup-matt-pocock-skills` 的 GitHub 模板检查 tracker 模板是否为其每个章节和 Wayfinding 操作提供了中文映射；`npx skills update` 之后先跑全部测试，失败即说明上游契约有变，需要补映射并实测。它不验证线上 API 或 Agent 的实际行为。CLI/API 变化必须记录官方来源和核查日期。
+CI 检查入口元数据、包内相对链接、机器路径及 API 脚本的离线行为。`tests/test_matt_contract.py` 只在本机装有 Matt Skills 时运行：对照 `setup-matt-pocock-skills` 的 GitHub 模板检查 tracker 模板是否为其每个章节和 Wayfinding 操作提供了中文映射；`npx skills update` 之后先跑全部测试，失败即说明上游契约有变，需要补映射并实测。它只核对章节与操作名，通过不代表语义未变；hash 变化时仍对照上游 diff。它不验证线上 API 或 Agent 的实际行为。CLI/API 变化必须记录官方来源和核查日期。
 
 涉及工作流修改时，至少检查相应场景：
 
@@ -31,7 +31,7 @@ CI 检查入口元数据、包内相对链接、机器路径及 API 脚本的离
 - 手机连接已配置 PAT 入口的服务器：读取服务器机器记录，使用该入口完成身份及目标资源查询，不调用 Mac 的 `op`。
 - 服务器入口已配置但父 Shell 没有 Token：仍通过入口验证，不把变量缺失误判为未鉴权。
 - CI 注入、无 Dotfiles、入口缺失或组织不匹配：按已核实的作业/本机配置调用；缺少依据时报告缺项，不跨机器或账号尝试。
-- wayfinder：map 下的票都有负责人，frontier 仍按状态与 blocker 计算；认领推进状态并回读，解决后 frontier 前进到下一张票。
+- wayfinder：map 下的票都有负责人，frontier 仍按状态与 blocker 计算；blocker 被取消也解除阻塞；认领推进状态并回读，解决后 frontier 前进到下一张票。
 - 读取 Flow job 日志：只按行输出所需内容，不打印含签名 URL 的整段 `content`。
 - API 脚本与 CLI 共用本机注入入口；评论创建后按 ID 回读格式及原文，回读失败或结果不确定时不再次创建。Region 版不能直接运行中心版脚本。
 
