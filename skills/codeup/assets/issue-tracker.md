@@ -19,6 +19,7 @@
 | 需求 / 缺陷 / 任务的类型 ID | 从当前项目元数据读取 |
 | 必填字段和默认负责人 | 从项目约定及字段配置确认 |
 | 就绪标记 | 待选择已有原生标签、既有字段，或明确约定的正文 Agent readiness 字段 |
+| wayfinder 标签 | 使用 wayfinder 时记录 `wayfinder:map` 与四种 `wayfinder:<type>` 的标签 ID；未使用可留空 |
 | 关系映射 | 分别记录父子、ASSOCIATED、DEPEND_ON 允许的源/目标类型组合；变更后重新查询并验证方向，记录不可用时的明确回退方式 |
 | 业务状态与关闭标准 | 按各工作项类型填写实际状态 ID、合法流转、任务验收范围和父需求验收规则 |
 | 依赖解除条件 | 待约定可供后继使用的集成代码/制品/部署证据；与任务关闭分别判断 |
@@ -28,7 +29,7 @@
 | 外部 Agent 事件唤醒 | 未启用即可；按需记录接收端管理入口、去重/领取方式及授权范围，不保存 Secret 或带密钥的触发 URL |
 | 部署范围 | 待记录环境与本项目授权规则 |
 
-## 真相来源与操作
+## Conventions（真相来源与操作）
 
 ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代码与合并请求；Flow 保存实际流水线执行。规格内容沿用当前 Matt Skill 的发布位置，仓库文档可保存被引用的设计与领域决策，避免两处人工维护相同内容或进度。本文只保存项目配置与映射，设备部署文档负责安装和凭据入口。
 
@@ -46,3 +47,26 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 - 联动：按 codeup Skill 的自动化指引读取已配置规则的结果；外部事件只能触发重新核对和获准操作，不能自动扩大执行权限。
 
 列出已创建/更新的真实 URL 和 ID，说明本地检查、CI、合并及验收各自结果。跨仓库项目汇总所有必需 MR；操作中断时保留已完成资源映射，续跑不得重复创建。
+
+## Pull requests as a triage surface
+
+**MRs as a request surface: no.**（`triage` 读取此开关；未安装时保持 no。）
+
+## When a skill says "publish to the issue tracker"
+
+按内容在本项目创建需求、缺陷或任务（见上方“创建”），回读 `id` 与 `serialNumber`。
+
+## When a skill says "fetch the relevant ticket"
+
+`projex-get-workitem --id <serialNumber 或 API id>`，两者都接受；提交信息后缀 `-#<serialNumber>` 即展示编号。读取评论和关系时用返回的 `id`。
+
+## Wayfinding operations
+
+供 `/wayfinder` 使用，细节按 codeup Skill 的 Wayfinder 映射执行。
+
+- **Map**：一个需求，打 `wayfinder:map` 标签，正文为 Destination / Notes / Decisions so far / Not yet specified / Out of scope（Markdown）。
+- **Child ticket**：map 的任务子项（`--parent-id`），打 `wayfinder:<type>` 标签。
+- **Blocking**：原生 `DEPEND_ON`，从被阻塞的票指向 blocker，双向回读。
+- **Frontier query**：map 的 `SUB` 子项中处于未认领状态、且所有 `DEPEND_ON` blocker 已完成的票，按 map 顺序取第一个。
+- **Claim**：状态从未认领推进到开发中对应状态（填写上方状态映射的实际 ID），作为本会话第一个写操作；不以负责人表示认领。
+- **Resolve**：Markdown 评论写答案 → 推进到完成状态 → 在 map 的 Decisions so far 追加一行链接；超出范围的票推进到取消状态，并记入 Out of scope。

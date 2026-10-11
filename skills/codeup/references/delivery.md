@@ -69,7 +69,7 @@ Testhub 管理记录不能替代运行测试；调用创建流水线运行接口
 
 在 Codeup 目标分支保护中限制直接推送，并把该 Flow 流水线设为必需检查。首次接入用获准的临时失败测试验证“自动触发 → CI 失败 → 普通合并被拒”，移除探针后验证当前 SHA 的必需检查成功；再次推送应重新等待新版本检查。使用 `codeup-list-change-request-patch-sets` 找到最新源版本，再用 `codeup-list-change-request-ci-check-list --patch-set-biz-id` 核对必需项、运行与结果。临时失败测试在最终交付差异中移除，证据留在 MR/Flow。
 
-CI 失败先读取与本次 SHA 对应的失败 job 日志并脱敏，再修复。`flow-get-pipeline-job-run-log --job-id` 使用运行详情中 stage 的 job ID，不是 actions 日志链接里的执行 ID。首次接入打印语言版本；镜像名称不能证明运行时版本与本机一致。写入测试结果必须来源于实际执行；无法执行就标未验证。创建运行超时先查询是否已启动，避免重复构建/部署。
+CI 失败先读取与本次 SHA 对应的失败 job 日志并脱敏，再修复。`flow-get-pipeline-job-run-log --job-id` 使用运行详情中 stage 的 job ID（`flow-get-pipeline-run --cli-query 'stages[].stageInfo.jobs[].id'`），不是 actions 日志链接里的执行 ID。日志的 `content` 是一整段字符串，含带 STS `security-token` 的步骤下载签名 URL：用 `--cli-query content` 取出后按行过滤需要的行，不整段打印、粘贴或写入评论。首次接入打印语言版本；镜像名称不能证明运行时版本与本机一致。写入测试结果必须来源于实际执行；无法执行就标未验证。创建运行超时先查询是否已启动，避免重复构建/部署。
 
 ## 合并与验收
 

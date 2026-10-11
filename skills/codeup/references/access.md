@@ -66,7 +66,9 @@ aliyun devops projex-search-projects --page 1 --per-page 10
 aliyun devops flow-list-pipelines --page 1 --per-page 20
 ```
 
-调用前看具体命令的 `--help`；参数通常为 kebab-case，REST 字段通常为 camelCase，不能机械替换。结构化参数依帮助构造。多行内容先写临时文件；优先使用真实支持的文件参数或结构化工具参数。不要假定每个命令都有 `--body-file`、`--json`、`--all`、`--dry-run`。
+调用前看具体命令的 `--help`；参数通常为 kebab-case，REST 字段通常为 camelCase，不能机械替换。结构化参数依帮助构造。多行内容先写临时文件；优先使用真实支持的文件参数或结构化工具参数。不要假定每个命令都有 `--body-file`、`--json`、`--all`。
+
+`aliyun-cli-devops 0.9.1` 提供全局参数：`--cli-query '<JMESPath>'` 在本地裁剪输出，查询时只取所需字段，如 `--cli-query '[].{id:id,sn:serialNumber,st:status.name}'`；`--cli-dry-run` 只打印方法、URL 和请求体而不发送，适合写操作前核对参数。dry-run 会显示令牌前 4 位，输出不外发。全局 `--pager` 对返回顶层数组的接口（如 `projex-search-workitems`）实测不可用，分页仍按 `--page` 逐页取完。
 
 区分成功退出码、HTTP 成功和业务成功；创建操作完成后读取返回 ID 对应资源。列表有分页，按响应分页信息取完目标范围；无法确认完整性时标明截断。SearchWorkitems 是只读语义的 POST，不能只凭 HTTP 方法判断风险。
 

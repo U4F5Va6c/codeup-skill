@@ -64,8 +64,9 @@ ProjeX 项目按产品、团队或共同交付目标组织需求；Codeup 仓库
 | to-spec | 需求工作项承载规格，保留其原有测试边界确认流程 |
 | to-tickets | 审阅后的纵向切片作为任务/子项，保留真实依赖，不自动关闭父项 |
 | implement-spec | 按 [执行阶段映射](projex.md#matt-执行阶段与业务状态)计算 frontier；各仓库维护自己的集成分支、MR 和证据 |
+| wayfinder | 需求作 map、任务子项作决策票；认领用状态而非负责人，见 [Wayfinder 映射](projex.md#wayfinder) |
 | triage（若安装） | 按项目的分诊映射读取和更新，不调用 gh label |
-| pr / code-review | 内容遵循当前 Skill、用户和项目约定，MR 模板仅在缺少约定时参考；独立双轴审阅与平台审批分别核验 |
+| pr / code-review | 内容遵循当前 Skill、用户和项目约定，MR 模板仅在缺少约定时参考；提交后缀中的展示编号按 tracker 的 fetch 章节读取；独立双轴审阅与平台审批分别核验 |
 | domain-modeling | 沿用 glossary/ADR，不把跟踪平台差异混入业务术语 |
 
 Matt Skills 决定设计、拆票、实现与审阅方法；本 Skill 负责云效对象、调用及结果核验；tracker 保存项目资源与状态映射；平台保存业务进度；设备部署文档保存 CLI 与凭据入口。正文、评论、MR 的内容和结构沿用当前 Skill、用户与项目约定，本 Skill 只处理平台格式兼容。遇到具体 Skill 硬编码 `gh`，先检查其可配置点；必要时对该 Skill 做最小改动，不全局替换系统 `gh`。
@@ -82,4 +83,5 @@ setup 只编辑一个已有指令文件，不能假定另一个 Agent 会自动�
 
 - [ProjeX 项目关联代码库与流水线](https://help.aliyun.com/zh/yunxiao/product-overview/2023-1)
 - [MR 流水线合并检查](https://help.aliyun.com/zh/yunxiao/user-guide/extending-code-detection-through-pipelining)
+- Matt Skills 适配基线：`mattpocock/skills` 于 2026-10-10 安装的版本，tracker 章节以其 `setup-matt-pocock-skills/issue-tracker-github.md` 为准；上游更新后重新核对。
 - 关系、状态与 Webhook 的官方来源见 [ProjeX](projex.md#来源) 和 [自动化](automation.md#来源)；平台设置于 2026-10-11 核对，仍需按目标租户权限实测。
