@@ -1,4 +1,4 @@
-# Issue tracker：ProjeX + Codeup
+# 工作项追踪：ProjeX + Codeup
 
 这是接入模板。填入并核对本项目资源后才能作为已生效配置；不在此保存令牌。
 
@@ -29,7 +29,7 @@
 | 外部 Agent 事件唤醒 | 未启用即可；按需记录接收端管理入口、去重/领取方式及授权范围，不保存 Secret 或带密钥的触发 URL |
 | 部署范围 | 待记录环境与本项目授权规则 |
 
-## Conventions（真相来源与操作）
+## 真相来源与操作
 
 ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代码与合并请求；Flow 保存实际流水线执行。规格内容沿用当前 Matt Skill 的发布位置，仓库文档可保存被引用的设计与领域决策，避免两处人工维护相同内容或进度。本文只保存项目配置与映射，设备部署文档负责安装和凭据入口。
 
@@ -48,25 +48,25 @@ ProjeX 保存需求、缺陷、任务、关系和验收状态；Codeup 保存代
 
 列出已创建/更新的真实 URL 和 ID，说明本地检查、CI、合并及验收各自结果。跨仓库项目汇总所有必需 MR；操作中断时保留已完成资源映射，续跑不得重复创建。
 
-## Pull requests as a triage surface
+## MR 作为分诊入口
 
-**MRs as a request surface: no.**（`triage` 读取此开关；未安装时保持 no。）
+对应 Matt 的 `Pull requests as a triage surface`。**MR 作为需求入口：否。**（`triage` 读取此开关；未安装时保持“否”。）
 
-## When a skill says "publish to the issue tracker"
+## 发布到工作项追踪
 
-按内容在本项目创建需求、缺陷或任务（见上方“创建”），回读 `id` 与 `serialNumber`。
+对应 Matt 的 `publish to the issue tracker`。按内容在本项目创建需求、缺陷或任务（见上方“创建”），回读 `id` 与 `serialNumber`。
 
-## When a skill says "fetch the relevant ticket"
+## 读取相关工作项
 
-`projex-get-workitem --id <serialNumber 或 API id>`，两者都接受；提交信息后缀 `-#<serialNumber>` 即展示编号。读取评论和关系时用返回的 `id`。
+对应 Matt 的 `fetch the relevant ticket`。`projex-get-workitem --id <serialNumber 或 API id>`，两者都接受；提交信息后缀 `-#<serialNumber>` 即展示编号。读取评论和关系时用返回的 `id`。
 
-## Wayfinding operations
+## Wayfinder 操作
 
-供 `/wayfinder` 使用，细节按 codeup Skill 的 Wayfinder 映射执行。
+对应 Matt 的 `Wayfinding operations`，供 `/wayfinder` 使用，细节按 codeup Skill 的 Wayfinder 映射执行。
 
-- **Map**：一个需求，打 `wayfinder:map` 标签，正文为 Destination / Notes / Decisions so far / Not yet specified / Out of scope（Markdown）。
-- **Child ticket**：map 的任务子项（`--parent-id`），打 `wayfinder:<type>` 标签。
-- **Blocking**：原生 `DEPEND_ON`，从被阻塞的票指向 blocker，双向回读。
-- **Frontier query**：map 的 `SUB` 子项中处于未认领状态、且所有 `DEPEND_ON` blocker 已完成的票，按 map 顺序取第一个。
-- **Claim**：状态从未认领推进到开发中对应状态（填写上方状态映射的实际 ID），作为本会话第一个写操作；不以负责人表示认领。
-- **Resolve**：Markdown 评论写答案 → 推进到完成状态 → 在 map 的 Decisions so far 追加一行链接；超出范围的票推进到取消状态，并记入 Out of scope。
+- **决策图（Map）**：一个需求，打 `wayfinder:map` 标签，正文为 Destination / Notes / Decisions so far / Not yet specified / Out of scope（Markdown）。
+- **子票（Child ticket）**：决策图的任务子项（`--parent-id`），打 `wayfinder:<type>` 标签。
+- **阻塞（Blocking）**：原生 `DEPEND_ON`，从被阻塞的票指向 blocker，双向回读。
+- **可领取队列（Frontier query）**：决策图 `SUB` 子项中处于未认领状态、且所有 `DEPEND_ON` blocker 已完成的票，按决策图顺序取第一个。
+- **认领（Claim）**：状态从未认领推进到开发中对应状态（填写上方状态映射的实际 ID），作为本会话第一个写操作；不以负责人表示认领。
+- **解决（Resolve）**：Markdown 评论写答案 → 推进到完成状态 → 在决策图的 Decisions so far 追加一行链接；超出范围的票推进到取消状态，并记入 Out of scope。

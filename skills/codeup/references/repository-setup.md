@@ -31,18 +31,18 @@ ProjeX 项目按产品、团队或共同交付目标组织需求；Codeup 仓库
 
 用户已指定 ProjeX 时，tracker 选择已确定，不再询问 GitHub/本地 Markdown。读取 [issue-tracker 模板](../assets/issue-tracker.md)，补入已验证资源，展示待写文档和指令块供审阅，再应用。
 
-遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有共享/导入机制时，更新被共享的规范文件，保留引用入口。已有 `## Agent skills` 原位更新，不覆盖其他约定。
+遵循 setup 的文件选择：已有 `CLAUDE.md` 就编辑它，否则编辑已有 `AGENTS.md`；都没有时询问用户创建哪个。已有共享/导入机制时，更新被共享的规范文件，保留引用入口。已有 `## Agent skills` 原位更新，不覆盖其他约定；该标题是 setup 识别配置块的依据，保留英文，其下子标题与 tracker 文档标题用中文。
 
 ```markdown
 ## Agent skills
 
-### Issue tracker
+### 工作项追踪
 
 需求、缺陷和任务以 ProjeX 为准，代码评审使用 Codeup。追踪工作项、创建或评审 MR、
 合并分支及同步上游前，读取 `docs/agents/issue-tracker.md` 并加载 `codeup` Skill，
 合并策略按其交付指引执行。
 
-### Domain docs
+### 领域文档
 
 采用 single-context；探索相关领域前读取 `docs/agents/domain.md`。
 ```
@@ -64,7 +64,7 @@ ProjeX 项目按产品、团队或共同交付目标组织需求；Codeup 仓库
 | to-spec | 需求工作项承载规格，保留其原有测试边界确认流程 |
 | to-tickets | 审阅后的纵向切片作为任务/子项，保留真实依赖，不自动关闭父项 |
 | implement-spec | 按 [执行阶段映射](projex.md#matt-执行阶段与业务状态)计算 frontier；各仓库维护自己的集成分支、MR 和证据 |
-| wayfinder | 需求作 map、任务子项作决策票；认领用状态而非负责人，见 [Wayfinder 映射](projex.md#wayfinder) |
+| wayfinder | 需求作 map、任务子项作决策票；认领用状态而非负责人，见 [Wayfinder 映射](projex.md#wayfinder-映射) |
 | triage（若安装） | 按项目的分诊映射读取和更新，不调用 gh label |
 | pr / code-review | 内容遵循当前 Skill、用户和项目约定，MR 模板仅在缺少约定时参考；提交后缀中的展示编号按 tracker 的 fetch 章节读取；独立双轴审阅与平台审批分别核验 |
 | domain-modeling | 沿用 glossary/ADR，不把跟踪平台差异混入业务术语 |

@@ -63,7 +63,7 @@ projex-list-workitem-relation-records --id <A的工作项ID> --relation-type DEP
 
 当 `triage` 未安装但 `to-spec` / `to-tickets` 要求 `ready-for-agent` 时，按 issue-tracker 文档的就绪标记规则处理；缺少规则先生成草案并补齐约定，不机械创建五个标签或改业务工作流。
 
-## Wayfinder
+## Wayfinder 映射
 
 `wayfinder` 的 map 是一个需求，decision ticket 是它的任务子项；先按上节核对需求 → 任务的 `SUB` 与任务间 `DEPEND_ON`。标签 `wayfinder:map` 与 `wayfinder:research|prototype|grilling|task` 是项目原生标签：`projex-list-labels --id <projectId>` 查重，缺失时 `projex-create-label` 创建，ID 记入 tracker，创建时用 `--labels` 附加。决策票不打 `ready-for-agent`。
 

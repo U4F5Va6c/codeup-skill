@@ -9,7 +9,7 @@ python3 -m unittest discover -s tests -v
 npx -y skills add . --list
 ```
 
-CI 检查入口元数据、包内相对链接、机器路径及 API 脚本的离线行为。`tests/test_matt_contract.py` 只在本机装有 Matt Skills 时运行：对照 `setup-matt-pocock-skills` 的 GitHub 模板检查 tracker 模板的章节与 Wayfinding 操作；`npx skills update` 之后先跑全部测试，失败即说明上游契约有变，需要补映射并实测。它不验证线上 API 或 Agent 的实际行为。CLI/API 变化必须记录官方来源和核查日期。
+CI 检查入口元数据、包内相对链接、机器路径及 API 脚本的离线行为。`tests/test_matt_contract.py` 只在本机装有 Matt Skills 时运行：对照 `setup-matt-pocock-skills` 的 GitHub 模板检查 tracker 模板是否为其每个章节和 Wayfinding 操作提供了中文映射；`npx skills update` 之后先跑全部测试，失败即说明上游契约有变，需要补映射并实测。它不验证线上 API 或 Agent 的实际行为。CLI/API 变化必须记录官方来源和核查日期。
 
 涉及工作流修改时，至少检查相应场景：
 
